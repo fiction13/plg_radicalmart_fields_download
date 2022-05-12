@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   plg_radicalmart_fields_download
+  ~ @version   1.0.0
+  ~ @author    Dmitriy Vasyukov - https://fictionlabs.ru
+  ~ @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
+  ~ @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
+  ~ @link      https://fictionlabs.ru/
+  -->
+
+<form>
+	<fieldset name="content">
+		<fields name="params">
+			<field name="required" type="radio"
+				   label="PLG_RADICALMART_FIELDS_DOWNLOAD_REQUIRED"
+				   class="btn-group btn-group-yesno"
+				   default="0">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+		</fields>
+	</fieldset>
+</form>

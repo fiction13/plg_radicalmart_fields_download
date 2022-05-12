@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   plg_radicalmart_fields_download
+  ~ @version   1.0.0
+  ~ @author    Dmitriy Vasyukov - https://fictionlabs.ru
+  ~ @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
+  ~ @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
+  ~ @link      https://fictionlabs.ru/
+  -->
+
+<extension version="3.9" type="plugin" group="radicalmart_fields" method="upgrade">
+	<name>PLG_RADICALMART_FIELDS_DOWNLOAD</name>
+	<creationDate>March 2022</creationDate>
+    <author>Dmitriy Vasyukov</author>
+    <copyright>Copyright (C) 2005 - 2022 Open Source Matters. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>info@fictionlabs.ru</authorEmail>
+    <authorUrl>https://fictionlabs.ru</authorUrl>
+    <version>1.0.0</version>
+    <description>PLG_RADICALMART_FIELDS_DOWNLOAD_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+
+	<!-- Plugin languages -->
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_radicalmart_fields_download.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_radicalmart_fields_download.sys.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_radicalmart_fields_download.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_radicalmart_fields_download.sys.ini</language>
+	</languages>
+
+	<!-- Plugin files -->
+	<files>
+		<filename plugin="download">download.php</filename>
+		<folder>config</folder>
+		<folder>config</folder>
+	</files>
+
+	<!-- Plugin layoouts -->
+	<layouts destination="plugins/radicalmart_fields/download" folder="layouts">
+		<folder>display</folder>
+	</layouts>
+</extension>

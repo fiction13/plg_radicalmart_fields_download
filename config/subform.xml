@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   plg_radicalmart_fields_download
+  ~ @version   1.0.0
+  ~ @author    Dmitriy Vasyukov - https://fictionlabs.ru
+  ~ @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
+  ~ @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
+  ~ @link      https://fictionlabs.ru/
+  -->
+
+
+<form>
+	<field name="text" type="text" label="PLG_RADICALMART_FIELDS_DOWNLOAD_OPTIONS_TEXT"/>
+	<field name="file" type="media" label="PLG_RADICALMART_FIELDS_DOWNLOAD_OPTIONS_FILE"/>
+</form>
