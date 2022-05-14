@@ -32,10 +32,9 @@
 	<files>
 		<filename plugin="download">download.php</filename>
 		<folder>config</folder>
-		<folder>config</folder>
 	</files>
 
-	<!-- Plugin layoouts -->
+	<!-- Plugin layouts -->
 	<layouts destination="plugins/radicalmart_fields/download" folder="layouts">
 		<folder>display</folder>
 	</layouts>
