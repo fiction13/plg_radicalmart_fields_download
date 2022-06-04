@@ -16,6 +16,7 @@ use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Version;
 use Joomla\Registry\Registry;
 
 class plgRadicalMart_FieldsDownload extends CMSPlugin
@@ -118,17 +119,34 @@ class plgRadicalMart_FieldsDownload extends CMSPlugin
 		if ($field->plugin !== 'download') return false;
 
 		// Add Javascript
-		Factory::getDocument()->addScriptDeclaration('
-            document.addEventListener("DOMContentLoaded", function(event) {
-                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
-                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
-                
-                downloadLabel.style.marginLeft = "28px";
-                downloadLabel.classList.add(\'lead\');
-                downloadLabel.classList.remove(\'control-label\');
-                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
-            });
-        ');
+
+		if ((new Version())->isCompatible('4.0'))
+		{
+			Factory::getDocument()->addScriptDeclaration('
+	            document.addEventListener("DOMContentLoaded", function(event) {
+	                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
+	                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
+	                
+	                downloadLabel.classList.add(\'fw-bold\');
+	                downloadLabel.classList.add(\'mb-2\');
+	                downloadLabel.classList.remove(\'control-label\');
+	                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
+	            });
+	        ');
+		}
+		else{
+			Factory::getDocument()->addScriptDeclaration('
+	            document.addEventListener("DOMContentLoaded", function(event) {
+	                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
+	                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
+	                
+	                downloadLabel.style.marginLeft = "28px";
+	                downloadLabel.classList.add(\'lead\');
+	                downloadLabel.classList.remove(\'control-label\');
+	                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
+	            });
+	        ');
+		}
 
 		// Add fields
 		$file = Path::find(__DIR__ . '/config', 'product.xml');
@@ -237,10 +255,13 @@ class plgRadicalMart_FieldsDownload extends CMSPlugin
 
 		if (!is_array($value)) $value = array($value);
 
+
 		$values = [];
 
 		foreach ($value as $val)
 		{
+			$val['file'] = $this->getCleanFieldValue($val['file']);
+
 			if (!is_readable($val['file']) || !is_file($val['file']))
 			{
 				continue;
@@ -281,5 +302,25 @@ class plgRadicalMart_FieldsDownload extends CMSPlugin
 			'size' => number_format($size / pow(1024, $power), 2, '.', ','),
 			'unit' => $units[$power]
 	    ];
+	}
+
+	/**
+	 * Method to get clean file path.
+	 *
+	 * @param   object        $field   Field data object.
+	 * @param   string|array  $value   Field value.
+	 *
+	 * @return  string|false  Field string values on success, False on failure.
+	 *
+	 * @since  1.0.0
+	 */
+	public static function getCleanFieldValue($value)
+	{
+		if ($pos = strpos($value, '#'))
+		{
+			return substr($value, 0, $pos);
+		}
+
+		return $value;
 	}
 }
