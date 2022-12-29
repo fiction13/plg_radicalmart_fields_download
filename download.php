@@ -1,7 +1,7 @@
 <?php
 /*
- * @package   plg_radicalmart_fields_download
- * @version   1.0.0
+ * @package   RadicalMart Fields - Download
+ * @version   __DEPLOY_VERSION__
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
  * @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
@@ -63,6 +63,21 @@ class plgRadicalMart_FieldsDownload extends CMSPlugin
 	}
 
 	/**
+	 * Method to add field type to admin list.
+	 *
+	 * @param   string  $context  Context selector string.
+	 * @param   object  $item     List item object.
+	 *
+	 * @return string|false Field type constant on success, False on failure.
+	 *
+	 * @since  1.1.0
+	 */
+	public function onRadicalMartGetFieldType($context = null, $item = null)
+	{
+		return 'PLG_RADICALMART_FIELDS_DOWNLOAD_FIELD_TYPE';
+	}
+
+	/**
 	 * Method to add field config.
 	 *
 	 * @param   string    $context  Context selector string.
@@ -79,27 +94,23 @@ class plgRadicalMart_FieldsDownload extends CMSPlugin
 		Form::addFormPath(__DIR__ . '/config');
 		$form->loadFile('admin');
 
-		$form->setFieldAttribute('display_filter', 'type', 'hidden', 'params');
-		$form->setValue('display_filter', 'params', 0);
+		$form->setFieldAttribute('display_filter', 'readonly', 'true', 'params');
+		$form->setFieldAttribute('display_variability', 'readonly', 'true', 'params');
 	}
 
 	/**
-	 * Prepare options data.
+	 * Method to set field values.
 	 *
-	 * @param   string  $context  Context selector string.
-	 * @param   object  $objData  Input data.
-	 * @param   Form    $form     Joomla Form object.
+	 * @param   string    $context  Context selector string.
+	 * @param   Form      $form     Form object.
+	 * @param   Registry  $tmpData  Temporary form data.
 	 *
-	 * @throws  Exception
-	 *
-	 * @since  1.0.0
+	 * @since  __DEPLOY_VERSION__
 	 */
-	public function onContentNormaliseRequestData($context, $objData, $form)
+	public function onRadicalMartAfterGetFieldForm($context = null, $form = null, $tmpData = null)
 	{
-		if ($context === 'com_radicalmart.field')
-		{
-			// noop
-		}
+		$form->setValue('display_filter', 'params', '0');
+		$form->setValue('display_variability', 'params', '0');
 	}
 
 	/**
@@ -118,36 +129,6 @@ class plgRadicalMart_FieldsDownload extends CMSPlugin
 		if ($context !== 'com_radicalmart.product') return false;
 		if ($field->plugin !== 'download') return false;
 
-		// Add Javascript
-
-		if ((new Version())->isCompatible('4.0'))
-		{
-			Factory::getDocument()->addScriptDeclaration('
-	            document.addEventListener("DOMContentLoaded", function(event) {
-	                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
-	                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
-	                
-	                downloadLabel.classList.add(\'fw-bold\');
-	                downloadLabel.classList.add(\'mb-2\');
-	                downloadLabel.classList.remove(\'control-label\');
-	                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
-	            });
-	        ');
-		}
-		else{
-			Factory::getDocument()->addScriptDeclaration('
-	            document.addEventListener("DOMContentLoaded", function(event) {
-	                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
-	                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
-	                
-	                downloadLabel.style.marginLeft = "28px";
-	                downloadLabel.classList.add(\'lead\');
-	                downloadLabel.classList.remove(\'control-label\');
-	                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
-	            });
-	        ');
-		}
-
 		// Add fields
 		$file = Path::find(__DIR__ . '/config', 'product.xml');
 
@@ -163,37 +144,6 @@ class plgRadicalMart_FieldsDownload extends CMSPlugin
 		$xmlField->addAttribute('label', $field->title);
 
 		return $xmlField;
-	}
-
-	/**
-	 * Method to add field to filter form.
-	 *
-	 * @param   string  $context  Context selector string.
-	 * @param   object  $field    Field data object.
-	 * @param   array   $data     Data.
-	 *
-	 * @return false|SimpleXMLElement SimpleXMLElement on success, False on failure.
-	 *
-	 * @since  1.0.0
-	 */
-	public function onRadicalMartGetFilterFieldXml($context = null, $field = null, $data = null)
-	{
-		if ($field->plugin === 'download') return false;
-	}
-
-	/**
-	 * Method to modify query.
-	 *
-	 * @param   string          $context  Context selector string.
-	 * @param   JDatabaseQuery  $query    JDatabaseQuery  A JDatabaseQuery object to retrieve the data set
-	 * @param   object          $field    Field data object.
-	 * @param   array|string    $value    Value.
-	 *
-	 * @since  1.0.0
-	 */
-	public function onRadicalMartGetProductsListQuery($context = null, $query = null, $field = null, $value = null)
-	{
-		if ($field->plugin === 'download') return;
 	}
 
 	/**
@@ -292,23 +242,23 @@ class plgRadicalMart_FieldsDownload extends CMSPlugin
 	 *
 	 * @since 1.0.0
 	 */
-	function getFileSize($path)
+	public function getFileSize($path)
 	{
-	    $size = filesize($path);
-	    $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-	    $power = $size > 0 ? floor(log($size, 1024)) : 0;
+		$size  = filesize($path);
+		$units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+		$power = $size > 0 ? floor(log($size, 1024)) : 0;
 
-	    return [
+		return [
 			'size' => number_format($size / pow(1024, $power), 2, '.', ','),
 			'unit' => $units[$power]
-	    ];
+		];
 	}
 
 	/**
 	 * Method to get clean file path.
 	 *
-	 * @param   object        $field   Field data object.
-	 * @param   string|array  $value   Field value.
+	 * @param   object        $field  Field data object.
+	 * @param   string|array  $value  Field value.
 	 *
 	 * @return  string|false  Field string values on success, False on failure.
 	 *
